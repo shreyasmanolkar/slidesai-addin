@@ -11,6 +11,7 @@ import { sample1 } from "../../template/samplePPTs";
 import { aiResponse } from "../../template/sampleAIResponse";
 import { secretKey } from "./constants";
 import CryptoJS from 'crypto-js';
+import OfficeHelpers, { Authenticator } from "@microsoft/office-js-helpers";
 
 const useStyles = makeStyles({
   root: {
@@ -44,7 +45,7 @@ const App = () => {
     
     //     console.log("User: ", responseData);
     //     setLoggedIn(true);
-    //     setAuthUser(responseData);
+    //      setAuthUser(responseData);
     //   } catch (error) {
     //     console.error("Error fetching auth user:", error);
     //   }
@@ -72,15 +73,57 @@ const App = () => {
     //   }
     // };
 
+    const fetchUserDataFromBackend = async (authCode: string) => {
+      try {
+        const response = await fetch('https://localhost:5000/userdata', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ authCode }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const userData = await response.json();
+          return userData;
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        throw error;
+      }
+    }
+
     const initiateGoogleAuth = () => {
-      Office.context.ui.displayDialogAsync('https://localhost:5000/google/callback', { height: 30, width: 20 }, (result) => {
-        console.log('res', result);
-        let dialog = result.value;
-        dialog.addEventHandler(Office.EventType.DialogMessageReceived, args => {
-          // let authCode = args;
-          console.log('args', args);   
+      let dialog;
+      try {
+        Office.context.ui.displayDialogAsync('https://localhost:5000/auth/google', { height: 65, width: 30 }, (result) => {
+          dialog = result.value;
+          console.log('res1', result);
+          // console.log('res', JSON.stringify(result, null, 2));
+          
+          // dialog.close();
+
+          dialog.addEventHandler(Office.EventType.DialogMessageReceived, async args => {
+            // let authCode = args;
+            console.log('args', args);
+            // console.log('ac', authCode);
+            // dialog.close();
+            // let authCode = args.message;
+            // const userData = await fetchUserDataFromBackend(authCode);
+            // console.log('userData', userData);
+          })
+
+          // Office.context.ui.messageParent('sample text');
+
+          // dialog.addEventHandler(Office.EventType.DialogEventReceived, async args => {
+          //   console.log('args', args);
+          // })
+
+
         })
-      })
+      } catch (error) {
+        console.log('err', error); 
+      }
     }
     
     const initiateMicrosoftAuth = () => {}

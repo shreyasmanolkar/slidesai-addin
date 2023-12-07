@@ -37,6 +37,7 @@
   "dependencies": {
     "@fluentui/react-components": "^9.30.4",
     "@fluentui/react-icons": "^2.0.214",
+    "@microsoft/office-js-helpers": "^1.0.2",
     "core-js": "^3.9.1",
     "crypto-js": "^4.2.0",
     "es6-promise": "^4.2.8",
