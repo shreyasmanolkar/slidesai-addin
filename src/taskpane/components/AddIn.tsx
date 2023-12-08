@@ -14,6 +14,7 @@ import CryptoJS from 'crypto-js';
 
 interface AddInProps {
   title: string;
+  userInfo: any
 }
 
 const useStyles = makeStyles({
@@ -58,7 +59,7 @@ const AddIn = (props: AddInProps) => {
 
   async function fetchData(url) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { mode: 'no-cors' });
   
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -602,8 +603,8 @@ const AddIn = (props: AddInProps) => {
   
   const createThemePPT = async () => {
     try {
-      const aiResponseData = await fetchData('http://localhost:5000/v1/ai-response');
-      const themeDataData = await fetchData('http://localhost:5000/v1/base64');
+      const aiResponseData = await fetchData('https://localhost:5000/v1/ai-response');
+      const themeDataData = await fetchData('https://localhost:5000/v1/base64');
 
       const aiResponse = decryptData(aiResponseData.ed, secretKey);
       const themeData = decryptData(themeDataData.ed,  secretKey);
