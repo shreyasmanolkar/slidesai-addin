@@ -59,8 +59,7 @@ const AddIn = (props: AddInProps) => {
 
   async function fetchData(url) {
     try {
-      const response = await fetch(url, { mode: 'no-cors' });
-  
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -756,7 +755,7 @@ const AddIn = (props: AddInProps) => {
   }
 
   const getJSONData = () => {
-    fetch('http://localhost:5000/v1/ai-response')
+    fetch('https://localhost:5000/v1/ai-response')
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -775,7 +774,7 @@ const AddIn = (props: AddInProps) => {
   };
   
   const getBase64Data = () => {
-    fetch('http://localhost:5000/v1/base64')
+    fetch('https://localhost:5000/v1/base64')
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

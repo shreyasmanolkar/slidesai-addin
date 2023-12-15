@@ -34,12 +34,9 @@ const App = () => {
           dialog = result.value;
 
           dialog.addEventHandler(Office.EventType.DialogMessageReceived , async args => {
-            // dialog.close();
+            dialog.close();
             const userInfo = JSON.parse(args.message);
-            // console.log('ui', userInfo);
-
             localStorage.setItem('userInfo', JSON.stringify(userInfo));
-            
             setAuthUser(userInfo);
             setLoggedIn(true);
           })
@@ -49,15 +46,32 @@ const App = () => {
       }
     }
     
-    const initiateMicrosoftAuth = () => {}
+    const initiateMicrosoftAuth = () => {
+      let dialog;
+      try {
+        Office.context.ui.displayDialogAsync('https://localhost:5000/auth/microsoft', { height: 65, width: 30 }, (result) => {
+          dialog = result.value;
+          
+          dialog.addEventHandler(Office.EventType.DialogMessageReceived , async args => {
+            dialog.close();
+            const userInfo = JSON.parse(args.message);
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            setAuthUser(userInfo);
+            setLoggedIn(true);
+          })
+        })
+      } catch (error) {
+        console.log('err', error); 
+      }
+    }
 
     return ( loggedIn ? <AddIn title={"Contoso Task Pane Add-in"} userInfo={authUser}/> :
     <div className={styles.root}>
       <h1>SlidesAI</h1>
       <h3>Create beautiful presentation faster.</h3>
       <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate consectetur doloremque dolore repellendus, eveniet soluta laboriosam praesentium enim molestiae iure perferendis adipisci commodi facere? Corporis harum architecto accusamus similique ab!</p>
-      <button onClick={initiateGoogleAuth}>Google Sign-In</button>
-      {/* <button onClick={initiateMicrosoftAuth}>Microsoft Sign-In</button> */}
+      <button onClick={initiateGoogleAuth}>Google Sign-In</button> <br /> <br />
+      <button onClick={initiateMicrosoftAuth}>Microsoft Sign-In</button>
     </div>
   );
 }
